@@ -4,12 +4,13 @@
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.0-ee4c2c?logo=pytorch)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.95-009688?logo=fastapi)
 ![Docker](https://img.shields.io/badge/Docker-Container-2496ed?logo=docker)
-![Status](https://img.shields.io/badge/Status-Production%20Ready-success)
 
 ## 📖 Project Overview
+
 This project transitions a deep learning research model into a production-grade **Microservice**. It utilizes a fine-tuned **ConvNeXt-Tiny** model (98% Accuracy on PlantVillage) to classify plant diseases from leaf images.
 
 The architecture is designed for **Scalability** and **Portability**:
+
 1. **Inference Engine:** Decoupled prediction logic using a Singleton pattern.
 2. **API Layer:** High-performance REST API built with **FastAPI**.
 3. **Containerization:** Fully Dockerized environment for cloud-agnostic deployment.
@@ -17,14 +18,16 @@ The architecture is designed for **Scalability** and **Portability**:
 ---
 
 ## 🛠️ Tech Stack
-* **Model:** ConvNeXt-Tiny (PyTorch)
-* **Backend:** FastAPI (Python)
-* **Containerization:** Docker
-* **Deployment:** Hugging Face Spaces (Docker SDK)
+
+- **Model:** ConvNeXt-Tiny (PyTorch)
+- **Backend:** FastAPI (Python)
+- **Containerization:** Docker
+- **Deployment:** Hugging Face Spaces (Docker SDK)
 
 ---
 
 ## 📂 Repository Structure
+
 ```text
 ├── app/
 │   ├── main.py              # API Gateway & Endpoints
@@ -89,6 +92,4 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000
   "class": "Tomato___Target_Spot",
   "confidence": 0.985
 }
-
 ```
-

@@ -1,12 +1,9 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
-from app.model_service import PlantDiseaseInference
+from backendapp.model_service import PlantDiseaseInference
 import uvicorn
 
-# Initialize App
 app = FastAPI(title="Plant Disease Detection Microservice")
 
-# Initialize Model (Global Variable)
-# We load this once on startup
 MODEL_PATH = "models/ConvNext-Tiny.pth"
 CLASSES_PATH = "app/class_names.json"
 inference_engine = None
@@ -29,7 +26,7 @@ def home():
 
 @app.post("/predict")
 async def predict_disease(file: UploadFile = File(...)):
-    # Validation
+
     if file.content_type not in ["image/jpeg", "image/png"]:
         raise HTTPException(status_code=400, detail="File must be JPG or PNG")
 

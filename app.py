@@ -1,11 +1,13 @@
+# app.py
+
 from fastapi import FastAPI, UploadFile, File, HTTPException
-from backendapp.model_service import PlantDiseaseInference
+from backend.model_service import PlantDiseaseInference
 import uvicorn
 
 app = FastAPI(title="Plant Disease Detection Microservice")
 
-MODEL_PATH = "models/ConvNext-Tiny.pth"
-CLASSES_PATH = "app/class_names.json"
+MODEL_PATH = "backend/models/ConvNext-Tiny.pth"
+CLASSES_PATH = "backend/class_names.json"
 inference_engine = None
 
 

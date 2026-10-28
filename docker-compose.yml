@@ -2,6 +2,8 @@ services:
   backend:
     container_name: LeafRx_backend
     build: ./backend
+    volumes:
+      - ./models:/code/models
     ports:
       - "8000:8000"
     restart: always

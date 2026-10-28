@@ -9,7 +9,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu && \
     pip install --no-cache-dir -r /code/requirements.txt
 
-COPY ./app /code/app
+COPY ./service /code/service
 COPY ./models /code/models
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "service.app:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -1,10 +1,28 @@
 import io
 import os
+import random
 import gradio as gr
 from PIL import Image
 import requests
 
 API_URL = os.getenv("API_URL", "http://0.0.0.0:8000/predict")
+TEST_IMAGES_DIR = os.path.join(os.path.dirname(__file__), "test_images")
+VALID_EXTS = (".jpg", ".jpeg", ".png", ".webp", ".bmp")
+
+
+def get_random_samples(k=3):
+    """Fetch up to k random image paths from the test_images directory."""
+    if not os.path.isdir(TEST_IMAGES_DIR):
+        return []
+    all_files = [
+        os.path.join(TEST_IMAGES_DIR, f)
+        for f in os.listdir(TEST_IMAGES_DIR)
+        if f.lower().endswith(VALID_EXTS)
+    ]
+    if not all_files:
+        return []
+    return random.sample(all_files, min(k, len(all_files)))
+
 
 CUSTOM_CSS = """
 #main-container {
@@ -80,6 +98,13 @@ CUSTOM_CSS = """
     color: var(--body-text-color-subdued);
     padding: 2.2rem 1rem;
 }
+.samples-container {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    border-radius: 10px;
+    background: var(--background-fill-secondary);
+    border: 1px dashed var(--border-color-primary);
+}
 """
 
 
@@ -97,7 +122,7 @@ def parse_label(raw_name: str):
 
 def predict_leaf(image):
     if image is None:
-        raise gr.Error("Please upload an image first.")
+        raise gr.Error("Please upload or select an image first.")
 
     buffer = io.BytesIO()
     image.save(buffer, format="JPEG")
@@ -156,9 +181,7 @@ theme = gr.themes.Soft(
     block_border_width="1px",
 )
 
-with gr.Blocks(
-    theme=theme, css=CUSTOM_CSS, title="LeafRx - Crop Health AI"
-) as demo:
+with gr.Blocks(title="LeafRx - Crop Health AI") as demo:
     with gr.Column(elem_id="main-container"):
         gr.HTML(
             """
@@ -183,11 +206,26 @@ with gr.Blocks(
                     )
                     submit_btn = gr.Button("Analyze Leaf", variant="primary")
 
+                with gr.Column(elem_classes=["samples-container"]):
+                    with gr.Row():
+                        gr.Markdown("#### 🧪 Test Samples *(Click any image to test)*")
+                        reroll_btn = gr.Button("🎲 Load 3 New Samples", size="sm")
+
+                    gallery = gr.Gallery(
+                        value=get_random_samples(3),
+                        columns=3,
+                        rows=1,
+                        height=140,
+                        show_label=False,
+                        allow_preview=False,
+                        object_fit="cover",
+                    )
+
             with gr.Column(scale=5):
                 result_html = gr.HTML(
                     value="""
                     <div class="result-card empty-placeholder">
-                        Upload a clear leaf photo and click <b>Analyze Leaf</b> to view diagnostic results.
+                        Upload a clear leaf photo or click a sample to view diagnostic results.
                     </div>
                     """,
                 )
@@ -197,6 +235,25 @@ with gr.Blocks(
                     elem_classes=["result-card"],
                 )
 
+        # Re-roll samples into the gallery
+        reroll_btn.click(
+            fn=lambda: get_random_samples(3),
+            inputs=[],
+            outputs=[gallery],
+        )
+
+        # Selecting an image in the gallery loads it into image_input
+        def on_sample_select(evt: gr.SelectData):
+            # evt.value contains either the filepath string or a dict with {'image': {'path': ...}}
+            if isinstance(evt.value, dict):
+                path = evt.value.get("image", {}).get("path") or evt.value.get("image")
+            else:
+                path = evt.value
+            return Image.open(path) if path else None
+
+        gallery.select(fn=on_sample_select, outputs=[image_input])
+
+        # Prediction handler
         submit_btn.click(
             fn=predict_leaf,
             inputs=[image_input],
@@ -204,4 +261,10 @@ with gr.Blocks(
         )
 
 if __name__ == "__main__":
-    demo.launch(server_name="0.0.0.0", server_port=7860, inbrowser=True)
+    demo.launch(
+        server_name="0.0.0.0",
+        server_port=7860,
+        inbrowser=True,
+        theme=theme,
+        css=CUSTOM_CSS,
+    )

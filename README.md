@@ -71,7 +71,7 @@
 │   ├── prepare_dataset.py      # Dataset preparation and data loaders
 │   ├── utils.py                # Training utilities
 │   └── notebooks/
-│       ├── Plant_Disease_Detection.ipynb
+│       ├── main.ipynb
 │       └── evaluate.ipynb      # Evaluation, plots, and example predictions
 ├── docker-compose.yml          # Runs the frontend and backend together
 ├── requirements.txt            # Root-level Python dependencies

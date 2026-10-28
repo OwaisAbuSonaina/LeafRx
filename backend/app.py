@@ -3,12 +3,26 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from model_service import PlantDiseaseInference
 import uvicorn
+from huggingface_hub import hf_hub_download
+import os
+from pathlib import Path
 
 app = FastAPI(title="Plant Disease Detection Microservice")
 
-MODEL_PATH = "models/ConvNext-Tiny.pth"
 CLASSES_PATH = "class_names.json"
 inference_engine = None
+
+MODEL_DIR = Path(os.getenv("MODEL_DIR", "./models"))
+MODEL_FILENAME = "ConvNeXt-tiny.pth"
+MODEL_PATH = MODEL_DIR / MODEL_FILENAME
+
+if not MODEL_PATH.is_file():
+    MODEL_DIR.mkdir(parents=True, exist_ok=True)
+    hf_hub_download(
+        repo_id="OwaisAbuSonaina/LeafRx-ConvNeXt-tiny",
+        filename=MODEL_FILENAME,
+        local_dir=str(MODEL_DIR)
+    )
 
 
 @app.on_event("startup")

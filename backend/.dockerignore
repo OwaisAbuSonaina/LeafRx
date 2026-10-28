@@ -1,0 +1,12 @@
+# Python Virtual Environments
+.venv/
+env/
+venv/
+
+# Python Bytecode & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+.git
+README.md

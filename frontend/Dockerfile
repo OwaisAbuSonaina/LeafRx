@@ -12,4 +12,4 @@ EXPOSE 7860
 
 ENV GRADIO_SERVER_NAME="0.0.0.0"
 
-CMD ["python", "frontend.py"]
+CMD ["python", "-u", "frontend.py"]

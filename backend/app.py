@@ -30,9 +30,9 @@ def load_model():
     global inference_engine
     try:
         inference_engine = PlantDiseaseInference(MODEL_PATH, CLASSES_PATH)
-        print("Model loaded successfully.")
+        print("MODEL LOADED SUCCESSFULLY.")
     except Exception as e:
-        print(f"Error loading model: {e}")
+        print(f"ERROR LOADING MODEL --> {e}")
 
 
 @app.get("/")
@@ -55,4 +55,4 @@ async def predict_disease(file: UploadFile = File(...)):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, port=8000)
